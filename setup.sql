@@ -1,53 +1,44 @@
-// Step1: テーブル作成 //
-
 -- ロールの指定
-USE ROLE ACCOUNTADMIN;
-CREATE WAREHOUSE IF NOT EXISTS COMPUTE_WH WAREHOUSE_SIZE = 'XSMALL' AUTO_SUSPEND = 60 AUTO_RESUME = TRUE;
-USE WAREHOUSE COMPUTE_WH;
+USE ROLE COCO_HANDS_ON_ROLE;
 
+-- ユーザ名を動的に取得してデータベース名を設定
+SET DB_NAME = 'SNOWRETAIL_DB_' || CURRENT_USER();
+SET SCHEMA_NAME = $DB_NAME || '.SNOWRETAIL_SCHEMA';
+SET STAGE_NAME = $DB_NAME || '.SNOWRETAIL_SCHEMA.FILE';
 
 // Step2: 各種オブジェクトの作成 //
 
 -- データベースの作成
-CREATE OR REPLACE DATABASE SNOWRETAIL_DB;
+CREATE OR REPLACE DATABASE IDENTIFIER($DB_NAME);
 -- スキーマの作成
-CREATE OR REPLACE SCHEMA SNOWRETAIL_DB.SNOWRETAIL_SCHEMA;
+CREATE OR REPLACE SCHEMA IDENTIFIER($SCHEMA_NAME);
 -- スキーマの指定
-USE SCHEMA SNOWRETAIL_DB.SNOWRETAIL_SCHEMA;
+USE SCHEMA IDENTIFIER($SCHEMA_NAME);
 
 -- ステージの作成
-CREATE OR REPLACE STAGE SNOWRETAIL_DB.SNOWRETAIL_SCHEMA.FILE encryption = (type = 'snowflake_sse') DIRECTORY = (ENABLE = TRUE);
+CREATE OR REPLACE STAGE IDENTIFIER($STAGE_NAME) encryption = (type = 'snowflake_sse') DIRECTORY = (ENABLE = TRUE);
 
 
 // Step3: 公開されているGitからデータとスクリプトを取得 //
-
--- Git連携のため、API統合を作成する
-CREATE OR REPLACE API INTEGRATION git_api_integration
-  API_PROVIDER = git_https_api
-  API_ALLOWED_PREFIXES = ('https://github.com/snow-jp-handson-org/')
-  ENABLED = TRUE;
-
--- GIT統合の作成
+  
+-- GITリポジトリの作成
 CREATE OR REPLACE GIT REPOSITORY GIT_INTEGRATION_FOR_COCO_CLI_HANDSON
-  API_INTEGRATION = git_api_integration
-  ORIGIN = 'https://github.com/snow-jp-handson-org/coco-cli-handson-jp.git';
+  API_INTEGRATION = git_api_coco_hands_on_integration
+  ORIGIN = 'https://github.com/sfc-gh-chtan/coco-snowsight-handson-jp.git';
 
--- チェックする
+-- チェックする   
 ls @GIT_INTEGRATION_FOR_COCO_CLI_HANDSON/branches/main;
 
 -- Githubからファイルを持ってくる
-COPY FILES INTO @SNOWRETAIL_DB.SNOWRETAIL_SCHEMA.FILE FROM @GIT_INTEGRATION_FOR_COCO_CLI_HANDSON/branches/main/data/ PATTERN ='.*\\.csv$';
+COPY FILES INTO @IDENTIFIER($STAGE_NAME) FROM @GIT_INTEGRATION_FOR_COCO_CLI_HANDSON/branches/main/data/ PATTERN ='.*\\.csv$';
 
 -- ============================================================
 -- 1. データの準備
 -- この章では外部にある4種類のCSVファイルをSnowflake テーブルとして投入する
 -- ============================================================
 
-use role accountadmin;
-alter account set CORTEX_ENABLED_CROSS_REGION = 'ANY_REGION';
-
 -- データベースの作成, スキーマの準備
-use schema snowretail_db.snowretail_schema;
+USE SCHEMA IDENTIFIER($SCHEMA_NAME);
 
 -- ファイルを確認
 ls @file;
