@@ -4,7 +4,7 @@
 
 EC（オンライン）と実店舗（リテール）の両チャネルを持つ SnowRetail のデータ分析プロジェクト。
 
-データベース: `SNOWRETAIL_DB`、スキーマ: `SNOWRETAIL_SCHEMA`
+データベース: `SNOWRETAIL_DB`にCurrentユーザ名を連結、スキーマ: `SNOWRETAIL_SCHEMA`
 
 ## ビジネス定義
 
