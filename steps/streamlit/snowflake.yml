@@ -7,7 +7,7 @@ entities:
       name: MONTHLY_SALES_DASHBOARD
       schema: SNOWRETAIL_SCHEMA
       database: SNOWRETAIL_DB
-    stage: SNOWRETAIL_DB.SNOWRETAIL_SCHEMA.FILE
+    stage: SNOWRETAIL_SCHEMA.FILE
     query_warehouse: COMPUTE_WH
     main_file: streamlit_app.py
     artifacts:
