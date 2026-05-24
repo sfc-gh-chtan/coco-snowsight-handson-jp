@@ -379,39 +379,6 @@ MART_SALESの最新データで月次売上分析レポートを作成しHTMLで
 
 ---
 
-## Step 9: MCPでデータ全体像を可視化
-
-### 目的
-draw.io MCPを使って、ハンズオン全体のデータ全体像をER図として可視化する。
-
-### プロンプト
-
-- 9-1. drawio MCPの接続確認
-```
-/mcp
-```
-
-または ターミナルで:
-```
-cortex mcp list
-```
-
-```
-draw.io MCPに接続する方法を教えて
-```
-
-```
-cortex mcp add drawio npx -- @drawio/mcp
-```
-
-- 9-2. ER図の作成
-```
-#EC_DATA #RETAIL_DATA #PRODUCT_MASTER #MART_SALES #CUSTOMER_REVIEWS #SNOW_RETAIL_DOCUMENTS
-draw.io MCPの open_drawio_mermaid を使って、これらのテーブルの関係をER図として可視化して
-```
-
----
-
 ## Step 10: 振り返り + Profileでチームに展開
 
 ### 目的
