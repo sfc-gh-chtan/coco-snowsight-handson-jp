@@ -87,7 +87,7 @@ MART_SALES 作成されたテーブルの件数と構造を確認して
 
 ---
 
-## Step 3: AGENTS.mdでプロジェクトルール定義（デモのみ）
+## Step 3: AGENTS.mdでプロジェクトルール定義
 
 ### 目的
 AGENTS.mdの Before/After 比較でソフトガバナンスの効果を体感する。
